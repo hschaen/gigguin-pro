@@ -21,6 +21,11 @@ export default function Home() {
                 Get Started
               </Button>
             </Link>
+            <Link href="/settings/organization">
+              <Button size="lg" variant="outline" className="gap-2">
+                Organization Settings
+              </Button>
+            </Link>
             <Link href="/events">
               <Button size="lg" variant="outline" className="gap-2">
                 <Calendar className="h-4 w-4" />
