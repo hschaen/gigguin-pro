@@ -153,6 +153,12 @@ export default function Home() {
             <Link href="/events/pipeline">
               <Button variant="outline">Event Pipeline</Button>
             </Link>
+            <Link href="/studio/brand-packs">
+              <Button variant="outline">Brand Packs</Button>
+            </Link>
+            <Link href="/studio/asset-generator">
+              <Button variant="outline">Asset Studio</Button>
+            </Link>
             <Link href="/dj-booking">
               <Button variant="outline">Book a DJ</Button>
             </Link>
@@ -160,7 +166,7 @@ export default function Home() {
               <Button variant="outline">Create Event</Button>
             </Link>
             <Link href="/asset-generator">
-              <Button variant="outline">Generate Assets</Button>
+              <Button variant="outline">Legacy Assets</Button>
             </Link>
             <Link href="/checkin">
               <Button variant="outline">Check-In Guests</Button>
