@@ -19,6 +19,54 @@ import { Organization, OrganizationInvite } from '@/lib/types/organization';
 const ORGS_COLLECTION = 'organizations';
 const INVITES_COLLECTION = 'organization_invites';
 
+// Get organizations by user
+export async function getOrganizationsByUser(userId: string): Promise<Organization[]> {
+  try {
+    const q = query(
+      collection(db, ORGS_COLLECTION),
+      where('team', 'array-contains', {
+        userId,
+        role: 'owner'
+      })
+    );
+    
+    const querySnapshot = await getDocs(q);
+    const organizations: Organization[] = [];
+    
+    querySnapshot.forEach((doc) => {
+      organizations.push({
+        id: doc.id,
+        ...doc.data()
+      } as Organization);
+    });
+    
+    // Also get organizations where user is a member
+    const memberQuery = query(
+      collection(db, ORGS_COLLECTION),
+      where('team', 'array-contains', {
+        userId,
+        role: 'member'
+      })
+    );
+    
+    const memberSnapshot = await getDocs(memberQuery);
+    memberSnapshot.forEach((doc) => {
+      const exists = organizations.some(org => org.id === doc.id);
+      if (!exists) {
+        organizations.push({
+          id: doc.id,
+          ...doc.data()
+        } as Organization);
+      }
+    });
+    
+    return organizations;
+  } catch (error) {
+    console.error('Error getting user organizations:', error);
+    return [];
+  }
+}
+
 // Create a new organization
 export async function createOrganization(
   orgData: Omit<Organization, 'id' | 'createdAt' | 'updatedAt'>
