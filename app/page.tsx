@@ -150,6 +150,9 @@ export default function Home() {
         <div className="mt-16 text-center">
           <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
           <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/events/pipeline">
+              <Button variant="outline">Event Pipeline</Button>
+            </Link>
             <Link href="/dj-booking">
               <Button variant="outline">Book a DJ</Button>
             </Link>
