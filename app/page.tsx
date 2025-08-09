@@ -150,6 +150,9 @@ export default function Home() {
         <div className="mt-16 text-center">
           <h2 className="text-2xl font-bold mb-6">Quick Actions</h2>
           <div className="flex flex-wrap gap-4 justify-center">
+            <Link href="/venues">
+              <Button variant="outline">Browse Venues</Button>
+            </Link>
             <Link href="/events/pipeline">
               <Button variant="outline">Event Pipeline</Button>
             </Link>
@@ -164,9 +167,6 @@ export default function Home() {
             </Link>
             <Link href="/events/create">
               <Button variant="outline">Create Event</Button>
-            </Link>
-            <Link href="/asset-generator">
-              <Button variant="outline">Legacy Assets</Button>
             </Link>
             <Link href="/checkin">
               <Button variant="outline">Check-In Guests</Button>
