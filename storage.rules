@@ -1,0 +1,83 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isOrgMember(orgId) {
+      return isAuthenticated() && 
+        firestore.exists(/databases/(default)/documents/organizations/$(orgId)/members/$(request.auth.uid));
+    }
+    
+    function isOrgAdmin(orgId) {
+      return isAuthenticated() && 
+        firestore.get(/databases/(default)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // User profile images
+    match /users/{userId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isOwner(userId);
+    }
+    
+    // Organization assets
+    match /organizations/{orgId}/{allPaths=**} {
+      allow read: if isOrgMember(orgId);
+      allow write: if isOrgAdmin(orgId);
+    }
+    
+    // Event images and documents
+    match /events/{eventId}/{allPaths=**} {
+      allow read: if true; // Public events can have public images
+      allow write: if isAuthenticated(); // Must be logged in to upload
+    }
+    
+    // Venue images
+    match /venues/{venueId}/{allPaths=**} {
+      allow read: if true; // Venue images are public
+      allow write: if isAuthenticated();
+    }
+    
+    // DJ media (photos, mixes, press kits)
+    match /djs/{djId}/{allPaths=**} {
+      allow read: if true; // DJ media is public
+      allow write: if isAuthenticated();
+    }
+    
+    // Brand pack assets
+    match /brand-packs/{packId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Contract documents
+    match /contracts/{contractId}/{allPaths=**} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Generated assets
+    match /generated/{orgId}/{allPaths=**} {
+      allow read: if isOrgMember(orgId);
+      allow write: if isOrgMember(orgId);
+    }
+    
+    // Public assets
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Only system can write to public
+    }
+    
+    // Temporary uploads (auto-deleted after 24 hours)
+    match /temp/{userId}/{allPaths=**} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+  }
+}
